@@ -55,7 +55,9 @@ dict set params GIT_HASH  "32'h${git_hash}"
 dict set params RELEASE_INFO  [format "32'h%08x" $release_info]
 
 # Board configuration
-dict set params CMS_ENABLE "1"
+# Cf. https://docs.amd.com/r/en-US/pg348-cms-subsystem/Alveo-Card-U45N-I/O-Constraints
+# For CMS constraints
+dict set params CMS_ENABLE "0"
 
 # Structural configuration
 dict set params IF_COUNT "1"
@@ -184,6 +186,8 @@ if {[dict get $params HBM_ENABLE]} {
 
 # PCIe IP core settings
 set pcie [get_ips pcie4c_uscale_plus_0]
+#set_property CONFIG.pcie_blk_locn {X0Y1} [get_ips pcie4c_uscale_plus_0]
+
 
 # Internal interface settings
 dict set params AXIS_PCIE_DATA_WIDTH [regexp -all -inline -- {[0-9]+} [get_property CONFIG.axisten_if_width $pcie]]

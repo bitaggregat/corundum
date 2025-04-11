@@ -7,7 +7,7 @@ FPGA_TOP = fpga
 FPGA_ARCH = virtexuplus
 
 # Files for synthesis
-SYN_FILES = rtl/fpga_au45.v
+SYN_FILES = rtl/fpga_au45n.v
 SYN_FILES += rtl/fpga_hbm.v
 SYN_FILES += rtl/fpga_core.v
 SYN_FILES += rtl/sync_signal.v
@@ -116,7 +116,7 @@ SYN_FILES += lib/pcie/rtl/pcie_us_cfg.v
 SYN_FILES += lib/pcie/rtl/pulse_merge.v
 
 # XDC files
-XDC_FILES = fpga_au45.xdc
+XDC_FILES = fpga_au45n.xdc
 #XDC_FILES += placement_au50.xdc
 XDC_FILES += boot.xdc
 XDC_FILES += lib/axi/syn/vivado/axil_cdc.tcl

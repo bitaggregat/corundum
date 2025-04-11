@@ -146,16 +146,16 @@ module fpga #
      */
     // input  wire         clk_100mhz_0_p,
     // input  wire         clk_100mhz_0_n,
-    input  wire         clk_100mhz_1_p,
-    input  wire         clk_100mhz_1_n,
+    input  wire         clk_300mhz_1_p,
+    input  wire         clk_300mhz_1_n,
 
     /*
      * GPIO
      */
-    output wire         qsfp_led_act,
-    output wire         qsfp_led_stat_g,
-    output wire         qsfp_led_stat_y,
-    output wire         hbm_cattrip,
+    output wire [1:1]   qsfp_led_act,
+    output wire [1:1]   qsfp_led_stat_g,
+    output wire [1:1]   qsfp_led_stat_y,
+    //output wire         hbm_cattrip,
     input  wire [1:0]   msp_gpio,
     output wire         msp_uart_txd,
     input  wire         msp_uart_rxd,
@@ -174,12 +174,12 @@ module fpga #
     /*
      * Ethernet: QSFP28
      */
-    output wire [3:0]   qsfp_tx_p,
-    output wire [3:0]   qsfp_tx_n,
-    input  wire [3:0]   qsfp_rx_p,
-    input  wire [3:0]   qsfp_rx_n,
-    input  wire         qsfp_mgt_refclk_0_p,
-    input  wire         qsfp_mgt_refclk_0_n
+    output wire [3:0]   qsfp1_tx_p,
+    output wire [3:0]   qsfp1_tx_n,
+    input  wire [3:0]   qsfp1_rx_p,
+    input  wire [3:0]   qsfp1_rx_n,
+    input  wire         qsfp1_mgt_refclk_0_p,
+    input  wire         qsfp1_mgt_refclk_0_n
     // input  wire         qsfp_mgt_refclk_1_p,
     // input  wire         qsfp_mgt_refclk_1_n
 );
@@ -222,8 +222,8 @@ parameter AXIS_ETH_RX_USER_WIDTH = (PTP_TS_ENABLE ? PTP_TS_WIDTH : 0) + 1;
 wire pcie_user_clk;
 wire pcie_user_reset;
 
-wire clk_100mhz_1_ibufg;
-wire clk_100mhz_1_int;
+wire clk_300mhz_1_ibufg;
+wire clk_300mhz_1_int;
 
 wire clk_50mhz_mmcm_out;
 wire clk_125mhz_mmcm_out;
@@ -245,30 +245,30 @@ IBUFGDS #(
    .IBUF_LOW_PWR("FALSE")
 )
 clk_100mhz_1_ibufg_inst (
-   .O   (clk_100mhz_1_ibufg),
-   .I   (clk_100mhz_1_p),
-   .IB  (clk_100mhz_1_n)
+   .O   (clk_300mhz_1_ibufg),
+   .I   (clk_300mhz_1_p),
+   .IB  (clk_300mhz_1_n)
 );
 
 BUFG
-clk_100mhz_1_bufg_inst (
-    .I(clk_100mhz_1_ibufg),
-    .O(clk_100mhz_1_int)
+clk_300mhz_1_bufg_inst (
+    .I(clk_300mhz_1_ibufg),
+    .O(clk_300mhz_1_int)
 );
 
 // MMCM instance
-// 100 MHz in, 125 MHz + 50 MHz out
+// 300 MHz in, 125 MHz + 50 MHz out
 // PFD range: 10 MHz to 500 MHz
 // VCO range: 800 MHz to 1600 MHz
-// M = 10, D = 1 sets Fvco = 1000 MHz
-// Divide by 8 to get output frequency of 125 MHz
-// Divide by 20 to get output frequency of 50 MHz
+// M = 5, D = 1 sets Fvco = 1500 MHz
+// Divide by 12 to get output frequency of 125 MHz
+// Divide by 30 to get output frequency of 50 MHz
 MMCME4_BASE #(
     .BANDWIDTH("OPTIMIZED"),
-    .CLKOUT0_DIVIDE_F(8),
+    .CLKOUT0_DIVIDE_F(12),
     .CLKOUT0_DUTY_CYCLE(0.5),
     .CLKOUT0_PHASE(0),
-    .CLKOUT1_DIVIDE(20),
+    .CLKOUT1_DIVIDE(30),
     .CLKOUT1_DUTY_CYCLE(0.5),
     .CLKOUT1_PHASE(0),
     .CLKOUT2_DIVIDE(1),
@@ -286,7 +286,7 @@ MMCME4_BASE #(
     .CLKOUT6_DIVIDE(1),
     .CLKOUT6_DUTY_CYCLE(0.5),
     .CLKOUT6_PHASE(0),
-    .CLKFBOUT_MULT_F(10),
+    .CLKFBOUT_MULT_F(5),
     .CLKFBOUT_PHASE(0),
     .DIVCLK_DIVIDE(1),
     .REF_JITTER1(0.010),
@@ -295,7 +295,7 @@ MMCME4_BASE #(
     .CLKOUT4_CASCADE("FALSE")
 )
 clk_mmcm_inst (
-    .CLKIN1(clk_100mhz_1_int),
+    .CLKIN1(clk_300mhz_1_int),
     .CLKFBIN(mmcm_clkfb),
     .RST(mmcm_rst),
     .PWRDWN(1'b0),
@@ -616,7 +616,7 @@ if (CMS_ENABLE) begin : cms
         .aresetn_ctrl_0(~rst_50mhz_int),
         .hbm_temp_1_0(hbm_temp_1),
         .hbm_temp_2_0(hbm_temp_2),
-        .interrupt_hbm_cattrip_0(hbm_cattrip),
+        .interrupt_hbm_cattrip_0( ),
         .interrupt_host_0(),
         .s_axi_ctrl_0_araddr(axil_cms_araddr_int),
         .s_axi_ctrl_0_arprot(axil_cms_arprot_int),
@@ -1009,8 +1009,8 @@ wire qsfp_mgt_refclk_0_int;
 wire qsfp_mgt_refclk_0_bufg;
 
 IBUFDS_GTE4 ibufds_gte4_qsfp_mgt_refclk_0_inst (
-    .I     (qsfp_mgt_refclk_0_p),
-    .IB    (qsfp_mgt_refclk_0_n),
+    .I     (qsfp1_mgt_refclk_0_p),
+    .IB    (qsfp1_mgt_refclk_0_n),
     .CEB   (1'b0),
     .O     (qsfp_mgt_refclk_0),
     .ODIV2 (qsfp_mgt_refclk_0_int)
@@ -1071,10 +1071,10 @@ qsfp_cmac_inst (
     /*
      * Serial data
      */
-    .xcvr_txp(qsfp_tx_p),
-    .xcvr_txn(qsfp_tx_n),
-    .xcvr_rxp(qsfp_rx_p),
-    .xcvr_rxn(qsfp_rx_n),
+    .xcvr_txp(qsfp1_tx_p),
+    .xcvr_txn(qsfp1_tx_n),
+    .xcvr_rxp(qsfp1_rx_p),
+    .xcvr_rxn(qsfp1_rx_n),
 
     /*
      * CMAC connections
@@ -1131,7 +1131,7 @@ assign ptp_clk = qsfp_mgt_refclk_0_bufg;
 assign ptp_rst = qsfp_rst;
 assign ptp_sample_clk = clk_125mhz_int;
 
-assign qsfp_led_stat_g = qsfp_rx_status;
+assign qsfp_led_stat_g[1] = qsfp_rx_status;
 
 // HBM
 wire [HBM_CH-1:0]                     hbm_clk;
@@ -1181,12 +1181,12 @@ generate
 
 if (HBM_ENABLE) begin
 
-    wire hbm_ref_clk = clk_100mhz_1_int;
+    wire hbm_ref_clk = clk_300mhz_1_int;
 
     wire hbm_cattrip_1;
     wire hbm_cattrip_2;
 
-    assign hbm_cattrip = hbm_cattrip_1 | hbm_cattrip_2;
+    //assign hbm_cattrip = hbm_cattrip_1 | hbm_cattrip_2;
 
     fpga_hbm #(
         .HBM_CH(HBM_CH),
@@ -1269,7 +1269,7 @@ end else begin
 
     assign hbm_status = 0;
 
-    assign hbm_cattrip = 1'b0;
+    //assign hbm_cattrip = 1'b0;
 
     assign hbm_temp_1 = 7'd0;
     assign hbm_temp_2 = 7'd0;
@@ -1455,9 +1455,9 @@ core_inst (
      */
     .sw(0),
     .led(),
-    .qsfp_led_act(qsfp_led_act),
+    .qsfp_led_act(qsfp_led_act[1]),
     //.qsfp_led_stat_g(qsfp_led_stat_g),
-    .qsfp_led_stat_y(qsfp_led_stat_y),
+    .qsfp_led_stat_y(qsfp_led_stat_y[1]),
     .pps_in(),
     .pps_out(),
 
