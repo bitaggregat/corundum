@@ -57,7 +57,7 @@ dict set params RELEASE_INFO  [format "32'h%08x" $release_info]
 # Board configuration
 # Cf. https://docs.amd.com/r/en-US/pg348-cms-subsystem/Alveo-Card-U45N-I/O-Constraints
 # For CMS constraints
-dict set params CMS_ENABLE "0"
+dict set params CMS_ENABLE "1"
 
 # Structural configuration
 dict set params IF_COUNT "1"

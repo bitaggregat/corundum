@@ -64,17 +64,27 @@ set_false_path -to [ get_ports { qsfp_led_act[1] qsfp_led_stat_g[1] qsfp_led_sta
 set_output_delay 0 [ get_ports { qsfp_led_act[1] qsfp_led_stat_g[1] qsfp_led_stat_y[1] } ]
 
 # UART
-set_property -dict { LOC AJ21 IOSTANDARD LVCMOS18 SLEW SLOW DRIVE 8 }   [ get_ports uart_txd[0] ]
-set_property -dict { LOC AK21 IOSTANDARD LVCMOS18 }                     [ get_ports uart_rxd[0] ]
 set_property -dict { LOC AK16 IOSTANDARD LVCMOS18 SLEW SLOW DRIVE 8 }   [ get_ports uart_txd[1] ]
 set_property -dict { LOC AK17 IOSTANDARD LVCMOS18 }                     [ get_ports uart_rxd[1] ]
 set_property -dict { LOC AP24 IOSTANDARD LVCMOS18 SLEW SLOW DRIVE 8 }   [ get_ports uart_txd[2] ]
 set_property -dict { LOC AR24 IOSTANDARD LVCMOS18 }                     [ get_ports uart_rxd[2] ]
 
-set_false_path -to      [ get_ports { uart_txd[0] uart_txd[1] uart_txd[2] } ]
-set_output_delay 0      [ get_ports { uart_txd[0] uart_txd[1] uart_txd[2] } ]
-set_false_path -from    [ get_ports { uart_rxd[0] uart_rxd[1] uart_rxd[2] } ]
-set_input_delay 0       [ get_ports { uart_rxd[0] uart_rxd[1] uart_rxd[2] } ]
+set_false_path -to      [ get_ports { uart_txd[1] uart_txd[2] } ]
+set_output_delay 0      [ get_ports { uart_txd[1] uart_txd[2] } ]
+set_false_path -from    [ get_ports { uart_rxd[1] uart_rxd[2] } ]
+set_input_delay 0       [ get_ports { uart_rxd[1] uart_rxd[2] } ]
+
+# BMC
+set_property -dict      { LOC AJ21 IOSTANDARD LVCMOS18 SLEW SLOW DRIVE 8 }  [ get_ports msp_uart_txd ] ; # As by https://docs.amd.com/r/en-US/pg348-cms-subsystem/Alveo-Card-U45N-I/O-Constraints
+set_property -dict      { LOC AK21 IOSTANDARD LVCMOS18 }                    [ get_ports msp_uart_rxd ] ; # Sic.
+set_property -dict      { LOC AM17 IOSTANDARD LVCMOS18 }                    [ get_ports msp_gpio[0] ]
+set_property -dict      { LOC AM18 IOSTANDARD LVCMOS18 }                    [ get_ports msp_gpio[1] ]
+
+set_false_path -to      [ get_ports { msp_uart_txd } ]
+set_output_delay 0      [ get_ports { msp_uart_txd } ]
+set_false_path -from    [ get_ports { msp_uart_rxd msp_gpio[*] } ]
+set_input_delay 0       [ get_ports { msp_uart_rxd msp_gpio[*] } ]
+
 
 # QSFP56 Interface (GTM) @QSFP #0 Connector
 #set_property -dict { LOC A13 } [ get_ports qsfp0_rx_p[0] ] ;# MGTYRXP0_234 GTM_DUAL_X0Y1 / GTM_REFCLK_X0Y1
