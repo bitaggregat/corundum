@@ -186,8 +186,6 @@ if {[dict get $params HBM_ENABLE]} {
 
 # PCIe IP core settings
 set pcie [get_ips pcie4c_uscale_plus_0]
-#set_property CONFIG.pcie_blk_locn {X0Y1} [get_ips pcie4c_uscale_plus_0]
-
 
 # Internal interface settings
 dict set params AXIS_PCIE_DATA_WIDTH [regexp -all -inline -- {[0-9]+} [get_property CONFIG.axisten_if_width $pcie]]
@@ -229,6 +227,8 @@ configure_bar $pcie 0 2 [expr [dict get $params APP_ENABLE] ? [dict get $params 
 
 # PCIe IP core configuration
 set pcie_config [dict create]
+
+dict set pcie_config "CONFIG.pcie_blk_locn" {X0Y1}
 
 # PCIe IDs
 dict set pcie_config "CONFIG.vendor_id" [format "%04x" $pcie_vendor_id]
