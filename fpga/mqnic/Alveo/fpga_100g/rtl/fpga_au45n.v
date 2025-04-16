@@ -614,9 +614,6 @@ if (CMS_ENABLE) begin : cms
     cms_inst (
         .aclk_ctrl_0(clk_50mhz_int),
         .aresetn_ctrl_0(~rst_50mhz_int),
-        .hbm_temp_1_0(hbm_temp_1),
-        .hbm_temp_2_0(hbm_temp_2),
-        .interrupt_hbm_cattrip_0( ),
         .interrupt_host_0(),
         .s_axi_ctrl_0_araddr(axil_cms_araddr_int),
         .s_axi_ctrl_0_arprot(axil_cms_arprot_int),
