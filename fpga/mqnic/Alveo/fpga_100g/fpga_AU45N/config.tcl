@@ -32,7 +32,7 @@ set fpga_id [expr 0x4AD5093]
 set fw_id [expr 0x00000000]
 set fw_ver $tag_ver
 set board_vendor_id [expr 0x10ee]
-set board_device_id [expr 0x9032]
+set board_device_id [expr 0x902D]
 set board_ver 1.0
 set release_info [expr 0x00000000]
 
