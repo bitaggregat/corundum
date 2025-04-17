@@ -1183,8 +1183,6 @@ if (HBM_ENABLE) begin
     wire hbm_cattrip_1;
     wire hbm_cattrip_2;
 
-    //assign hbm_cattrip = hbm_cattrip_1 | hbm_cattrip_2;
-
     fpga_hbm #(
         .HBM_CH(HBM_CH),
         .HBM_GROUP_SIZE(HBM_GROUP_SIZE),
@@ -1265,8 +1263,6 @@ end else begin
     assign m_axi_hbm_rvalid = 0;
 
     assign hbm_status = 0;
-
-    //assign hbm_cattrip = 1'b0;
 
     assign hbm_temp_1 = 7'd0;
     assign hbm_temp_2 = 7'd0;

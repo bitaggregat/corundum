@@ -8,7 +8,6 @@ FPGA_ARCH = virtexuplus
 
 # Files for synthesis
 SYN_FILES = rtl/fpga_au45n.v
-SYN_FILES += rtl/fpga_hbm.v
 SYN_FILES += rtl/fpga_core.v
 SYN_FILES += rtl/sync_signal.v
 SYN_FILES += rtl/common/mqnic_core_pcie_us.v
@@ -130,14 +129,12 @@ XDC_FILES += ../../../common/syn/vivado/mqnic_rb_clk_info.tcl
 XDC_FILES += ../../../common/syn/vivado/rb_drp.tcl
 XDC_FILES += ../../../common/syn/vivado/cmac_gty_wrapper.tcl
 XDC_FILES += ../../../common/syn/vivado/cmac_gty_ch_wrapper.tcl
-#XDC_FILES += hbm.xdc
 
 # IP
 IP_TCL_FILES = ip/pcie4c_uscale_plus_0.tcl
 IP_TCL_FILES += ip/cmac_usplus.tcl
 IP_TCL_FILES += ip/cmac_gty.tcl
 IP_TCL_FILES += ip/cms.tcl
-#IP_TCL_FILES += ip/hbm_0.tcl
 
 # Configuration
 CONFIG_TCL_FILES = ./config.tcl
