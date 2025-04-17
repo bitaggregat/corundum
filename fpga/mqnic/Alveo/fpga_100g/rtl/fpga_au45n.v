@@ -167,8 +167,8 @@ module fpga #
     input  wire [15:0]  pcie_rx_n,
     output wire [15:0]  pcie_tx_p,
     output wire [15:0]  pcie_tx_n,
-    input  wire         pcie_refclk_1_p,
-    input  wire         pcie_refclk_1_n,
+    input  wire         pcie_refclk_0_p,
+    input  wire         pcie_refclk_0_n,
     input  wire         pcie_reset_n,
 
     /*
@@ -666,8 +666,8 @@ IBUFDS_GTE4 #(
     .REFCLK_HROW_CK_SEL(2'b00)
 )
 ibufds_gte4_pcie_mgt_refclk_inst (
-    .I             (pcie_refclk_1_p),
-    .IB            (pcie_refclk_1_n),
+    .I             (pcie_refclk_0_p),
+    .IB            (pcie_refclk_0_n),
     .CEB           (1'b0),
     .O             (pcie_sys_clk_gt),
     .ODIV2         (pcie_sys_clk)

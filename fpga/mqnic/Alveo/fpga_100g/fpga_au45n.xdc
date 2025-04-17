@@ -212,10 +212,11 @@ set_property -dict { LOC AR21 } [ get_ports { pcie_tx_n[15] } ] ;# MGTYTXN0_224 
 # 100 MHz - Ref Clock from Host through PCIe-Finger Connector
 # (used in sync Clock Configurations of PCIe to Host Communication
 # [x16 or x8 bifurcated lanes 0-7 and x8 bifurcated lanes 8-16])
-#set_property -dict { LOC AL10 } [ get_ports pcie_refclk_0_p ] ;# MGTREFCLK0P_225 (for x8 bifurcated lanes 0-7)
-#set_property -dict { LOC AL9 }  [ get_ports pcie_refclk_0_n ] ;# MGTREFCLK0N_225 (for x8 bifurcated lanes 0-7)
-set_property -dict { LOC AF8 }  [ get_ports pcie_refclk_1_p ] ;# MGTREFCLK0P_227 (for x16 or x8 bifurcated lanes 8-16)
-set_property -dict { LOC AF7 }  [ get_ports pcie_refclk_1_n ] ;# MGTREFCLK0N_227 (for x16 or x8 bifurcated lanes 8-16)
+set_property -dict { LOC AL10 } [ get_ports pcie_refclk_0_p ] ;# MGTREFCLK0P_225 (for x8 bifurcated lanes 0-7)
+set_property -dict { LOC AL9 }  [ get_ports pcie_refclk_0_n ] ;# MGTREFCLK0N_225 (for x8 bifurcated lanes 0-7)
+#set_property -dict { LOC AF8 }  [ get_ports pcie_refclk_1_p ] ;# MGTREFCLK0P_227 (for x16 or x8 bifurcated lanes 8-16)
+#set_property -dict { LOC AF7 }  [ get_ports pcie_refclk_1_n ] ;# MGTREFCLK0N_227 (for x16 or x8 bifurcated lanes 8-16)
+
 
 # 100 MHz - Onboard Synthesized Ref Clock for PCIe-Connection
 # (used in async Clock Configurations of PCIe to Host Communication
