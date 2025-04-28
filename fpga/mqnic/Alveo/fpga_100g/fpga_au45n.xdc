@@ -113,22 +113,22 @@ set_input_delay 0       [ get_ports { msp_uart_rxd msp_gpio[*] } ]
 #create_clock -period 6.206 -name qsfp0_mgt_refclk_1 [ get_ports qsfp0_mgt_refclk_1_p ]
 
 # QSFP28 Interface (GTY) @ QSFP #1 Connector
-set_property -dict { LOC E2 } [ get_ports qsfp1_rx_p[0] ] ;# MGTYRXP0_231 GTYE4_CHANNEL_X0Y28 / GTYE4_COMMON_X0Y7
-set_property -dict { LOC E1 } [ get_ports qsfp1_rx_n[0] ] ;# MGTYRXN0_231 GTYE4_CHANNEL_X0Y28 / GTYE4_COMMON_X0Y7
-set_property -dict { LOC F5 } [ get_ports qsfp1_tx_p[0] ] ;# MGTYTXP0_231 GTYE4_CHANNEL_X0Y28 / GTYE4_COMMON_X0Y7
-set_property -dict { LOC F4 } [ get_ports qsfp1_tx_n[0] ] ;# MGTYTXN0_231 GTYE4_CHANNEL_X0Y28 / GTYE4_COMMON_X0Y7
-set_property -dict { LOC G2 } [ get_ports qsfp1_rx_p[1] ] ;# MGTYRXP1_231 GTYE4_CHANNEL_X0Y29 / GTYE4_COMMON_X0Y7
-set_property -dict { LOC G1 } [ get_ports qsfp1_rx_n[1] ] ;# MGTYRXN1_231 GTYE4_CHANNEL_X0Y29 / GTYE4_COMMON_X0Y7
-set_property -dict { LOC G7 } [ get_ports qsfp1_tx_p[1] ] ;# MGTYTXP1_231 GTYE4_CHANNEL_X0Y29 / GTYE4_COMMON_X0Y7
-set_property -dict { LOC G6 } [ get_ports qsfp1_tx_n[1] ] ;# MGTYTXN1_231 GTYE4_CHANNEL_X0Y29 / GTYE4_COMMON_X0Y7
-set_property -dict { LOC J2 } [ get_ports qsfp1_rx_p[2] ] ;# MGTYRXP2_231 GTYE4_CHANNEL_X0Y30 / GTYE4_COMMON_X0Y7
-set_property -dict { LOC J1 } [ get_ports qsfp1_rx_n[2] ] ;# MGTYRXN2_231 GTYE4_CHANNEL_X0Y30 / GTYE4_COMMON_X0Y7
-set_property -dict { LOC H5 } [ get_ports qsfp1_tx_p[2] ] ;# MGTYTXP2_231 GTYE4_CHANNEL_X0Y30 / GTYE4_COMMON_X0Y7
-set_property -dict { LOC H4 } [ get_ports qsfp1_tx_n[2] ] ;# MGTYTXN2_231 GTYE4_CHANNEL_X0Y30 / GTYE4_COMMON_X0Y7
-set_property -dict { LOC K4 } [ get_ports qsfp1_rx_p[3] ] ;# MGTYRXP3_231 GTYE4_CHANNEL_X0Y31 / GTYE4_COMMON_X0Y7
-set_property -dict { LOC K3 } [ get_ports qsfp1_rx_n[3] ] ;# MGTYRXN3_231 GTYE4_CHANNEL_X0Y31 / GTYE4_COMMON_X0Y7
-set_property -dict { LOC J7 } [ get_ports qsfp1_tx_p[3] ] ;# MGTYTXP3_231 GTYE4_CHANNEL_X0Y31 / GTYE4_COMMON_X0Y7
-set_property -dict { LOC J6 } [ get_ports qsfp1_tx_n[3] ] ;# MGTYTXN3_231 GTYE4_CHANNEL_X0Y31 / GTYE4_COMMON_X0Y7
+set_property -dict { LOC K4 } [ get_ports qsfp1_rx_p[0] ] ;# MGTYRXP0_231 GTYE4_CHANNEL_X0Y28 / GTYE4_COMMON_X0Y7
+set_property -dict { LOC K3 } [ get_ports qsfp1_rx_n[0] ] ;# MGTYRXN0_231 GTYE4_CHANNEL_X0Y28 / GTYE4_COMMON_X0Y7
+set_property -dict { LOC J7 } [ get_ports qsfp1_tx_p[0] ] ;# MGTYTXP0_231 GTYE4_CHANNEL_X0Y28 / GTYE4_COMMON_X0Y7
+set_property -dict { LOC J6 } [ get_ports qsfp1_tx_n[0] ] ;# MGTYTXN0_231 GTYE4_CHANNEL_X0Y28 / GTYE4_COMMON_X0Y7
+set_property -dict { LOC J2 } [ get_ports qsfp1_rx_p[1] ] ;# MGTYRXP1_231 GTYE4_CHANNEL_X0Y29 / GTYE4_COMMON_X0Y7
+set_property -dict { LOC J1 } [ get_ports qsfp1_rx_n[1] ] ;# MGTYRXN1_231 GTYE4_CHANNEL_X0Y29 / GTYE4_COMMON_X0Y7
+set_property -dict { LOC H5 } [ get_ports qsfp1_tx_p[1] ] ;# MGTYTXP1_231 GTYE4_CHANNEL_X0Y29 / GTYE4_COMMON_X0Y7
+set_property -dict { LOC H4 } [ get_ports qsfp1_tx_n[1] ] ;# MGTYTXN1_231 GTYE4_CHANNEL_X0Y29 / GTYE4_COMMON_X0Y7
+set_property -dict { LOC G2 } [ get_ports qsfp1_rx_p[2] ] ;# MGTYRXP2_231 GTYE4_CHANNEL_X0Y30 / GTYE4_COMMON_X0Y7
+set_property -dict { LOC G1 } [ get_ports qsfp1_rx_n[2] ] ;# MGTYRXN2_231 GTYE4_CHANNEL_X0Y30 / GTYE4_COMMON_X0Y7
+set_property -dict { LOC G7 } [ get_ports qsfp1_tx_p[2] ] ;# MGTYTXP2_231 GTYE4_CHANNEL_X0Y30 / GTYE4_COMMON_X0Y7
+set_property -dict { LOC G6 } [ get_ports qsfp1_tx_n[2] ] ;# MGTYTXN2_231 GTYE4_CHANNEL_X0Y30 / GTYE4_COMMON_X0Y7
+set_property -dict { LOC E2 } [ get_ports qsfp1_rx_p[3] ] ;# MGTYRXP3_231 GTYE4_CHANNEL_X0Y31 / GTYE4_COMMON_X0Y7
+set_property -dict { LOC E1 } [ get_ports qsfp1_rx_n[3] ] ;# MGTYRXN3_231 GTYE4_CHANNEL_X0Y31 / GTYE4_COMMON_X0Y7
+set_property -dict { LOC F5 } [ get_ports qsfp1_tx_p[3] ] ;# MGTYTXP3_231 GTYE4_CHANNEL_X0Y31 / GTYE4_COMMON_X0Y7
+set_property -dict { LOC F4 } [ get_ports qsfp1_tx_n[3] ] ;# MGTYTXN3_231 GTYE4_CHANNEL_X0Y31 / GTYE4_COMMON_X0Y7
 set_property -dict { LOC P9 } [ get_ports qsfp1_mgt_refclk_0_p ] ;# MGTREFCLK0P_231 from SI53306 OUT0
 set_property -dict { LOC P8 } [ get_ports qsfp1_mgt_refclk_0_n ] ;# MGTREFCLK0N_231 from SI53306 OUT0
 
@@ -212,24 +212,24 @@ set_property -dict { LOC AR21 } [ get_ports { pcie_tx_n[15] } ] ;# MGTYTXN0_224 
 # 100 MHz - Ref Clock from Host through PCIe-Finger Connector
 # (used in sync Clock Configurations of PCIe to Host Communication
 # [x16 or x8 bifurcated lanes 0-7 and x8 bifurcated lanes 8-16])
-set_property -dict { LOC AL10 } [ get_ports pcie_refclk_0_p ] ;# MGTREFCLK0P_225 (for x8 bifurcated lanes 0-7)
-set_property -dict { LOC AL9 }  [ get_ports pcie_refclk_0_n ] ;# MGTREFCLK0N_225 (for x8 bifurcated lanes 0-7)
-#set_property -dict { LOC AF8 }  [ get_ports pcie_refclk_1_p ] ;# MGTREFCLK0P_227 (for x16 or x8 bifurcated lanes 8-16)
-#set_property -dict { LOC AF7 }  [ get_ports pcie_refclk_1_n ] ;# MGTREFCLK0N_227 (for x16 or x8 bifurcated lanes 8-16)
+set_property -dict { LOC AL10 } [ get_ports pcie_refclk_0_p ] ;# MGTREFCLK0P_225 (for x16 or x8 bifurcated lanes 8-16)
+set_property -dict { LOC AL9 }  [ get_ports pcie_refclk_0_n ] ;# MGTREFCLK0N_225 (for x16 or x8 bifurcated lanes 8-16)
+#set_property -dict { LOC AF8 }  [ get_ports pcie_refclk_1_p ] ;# MGTREFCLK0P_227 (for x8 bifurcated lanes 0-7)
+#set_property -dict { LOC AF7 }  [ get_ports pcie_refclk_1_n ] ;# MGTREFCLK0N_227 (for x8 bifurcated lanes 0-7)
 
 
 # 100 MHz - Onboard Synthesized Ref Clock for PCIe-Connection
 # (used in async Clock Configurations of PCIe to Host Communication
 # [x16 or x8 bifurcated lanes 0-7 and x8 bifurcated lanes 8-16])
-#set_property -dict { LOC AK8 }  [ get_ports pcie_refclk_2_p ] ;# MGTREFCLK1P_225 (for async x8 bifurcated lanes 0-7)
-#set_property -dict { LOC AK7 }  [ get_ports pcie_refclk_2_n ] ;# MGTREFCLK1N_225 (for async x8 bifurcated lanes 0-7)
-#set_property -dict { LOC AE10 } [ get_ports pcie_refclk_3_p ] ;# MGTREFCLK1P_227 (for async x16 or x8 bifurcated lanes 8-16)
-#set_property -dict { LOC AE9 }  [ get_ports pcie_refclk_3_n ] ;# MGTREFCLK1N_227 (for async x16 or x8 bifurcated lanes 8-16)
+#set_property -dict { LOC AK8 }  [ get_ports pcie_refclk_2_p ] ;# MGTREFCLK1P_225 (for async x16 or x8 bifurcated lanes 8-16)
+#set_property -dict { LOC AK7 }  [ get_ports pcie_refclk_2_n ] ;# MGTREFCLK1N_225 (for async x16 or x8 bifurcated lanes 8-16)
+#set_property -dict { LOC AE10 } [ get_ports pcie_refclk_3_p ] ;# MGTREFCLK1P_227 (for async x8 bifurcated lanes 0-7)
+#set_property -dict { LOC AE9 }  [ get_ports pcie_refclk_3_n ] ;# MGTREFCLK1N_227 (for async x8 bifurcated lanes 0-7)
 
 # 100 MHz MGT reference clock
 # Synchronuous to Host Clock
-#create_clock -period 10 -name pcie_mgt_refclk_0                    [ get_ports pcie_refclk_0_p ]
-create_clock -period 10 -name pcie_mgt_refclk_1                    [ get_ports pcie_refclk_1_p ]
+create_clock -period 10 -name pcie_mgt_refclk_0                    [ get_ports pcie_refclk_0_p ]
+#create_clock -period 10 -name pcie_mgt_refclk_1                    [ get_ports pcie_refclk_1_p ]
 # Asynchronuous to Host Clock
 #create_clock -period 10 -name pcie_mgt_refclk_2                    [ get_ports pcie_refclk_2_p ]
 #create_clock -period 10 -name pcie_mgt_refclk_3                    [ get_ports pcie_refclk_3_p ]
