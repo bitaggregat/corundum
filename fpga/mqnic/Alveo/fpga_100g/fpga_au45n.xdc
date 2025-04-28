@@ -93,8 +93,8 @@ set_input_delay 0       [ get_ports { msp_uart_rxd msp_gpio[*] } ]
 #set_property -dict { LOC C14 } [ get_ports qsfp0_tx_n[0] ] ;# MGTYTXN0_234 GTM_DUAL_X0Y1 / GTM_REFCLK_X0Y1
 #set_property -dict { LOC A16 } [ get_ports qsfp0_rx_p[1] ] ;# MGTYRXP1_234 GTM_DUAL_X0Y1 / GTM_REFCLK_X0Y1
 #set_property -dict { LOC A15 } [ get_ports qsfp0_rx_n[1] ] ;# MGTYRXN1_234 GTM_DUAL_X0Y1 / GTM_REFCLK_X0Y1
-#set_property -dict { LOC C17 } [ get_ports qsfp0_tx_p[1] ] ;# MGTYTXP1_234 GTM_DUAL_X0Y1 / GTM_REFCLK_X0Y1
-#set_property -dict { LOC C18 } [ get_ports qsfp0_tx_n[1] ] ;# MGTYTXN1_234 GTM_DUAL_X0Y1 / GTM_REFCLK_X0Y1
+#set_property -dict { LOC C18 } [ get_ports qsfp0_tx_p[1] ] ;# MGTYTXP1_234 GTM_DUAL_X0Y1 / GTM_REFCLK_X0Y1
+#set_property -dict { LOC C17 } [ get_ports qsfp0_tx_n[1] ] ;# MGTYTXN1_234 GTM_DUAL_X0Y1 / GTM_REFCLK_X0Y1
 #set_property -dict { LOC A7 }  [ get_ports qsfp0_rx_p[2] ] ;# MGTYRXP2_233 GTM_DUAL_X0Y0 / GTM_REFCLK_X0Y0
 #set_property -dict { LOC A6 }  [ get_ports qsfp0_rx_n[2] ] ;# MGTYRXN2_233 GTM_DUAL_X0Y0 / GTM_REFCLK_X0Y0
 #set_property -dict { LOC C9 }  [ get_ports qsfp0_tx_p[2] ] ;# MGTYTXP2_233 GTM_DUAL_X0Y0 / GTM_REFCLK_X0Y0
