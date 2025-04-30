@@ -947,7 +947,7 @@ end
 
 // XGMII 25G PHY
 localparam QSFP_CNT = 1;
-localparam CH_CNT = QSFP_CNT*4;
+localparam CH_CNT = QSFP_CNT;
 
 wire [CH_CNT-1:0]                     qsfp_tx_clk;
 wire [CH_CNT-1:0]                     qsfp_tx_rst;
@@ -962,17 +962,17 @@ wire [CH_CNT-1:0]                     qsfp_cfg_rx_prbs31_enable;
 wire [CH_CNT*7-1:0]                   qsfp_rx_error_count;
 wire [CH_CNT-1:0]                     qsfp_rx_status;
 
-wire [QSFP_CNT-1:0]                   qsfp_drp_clk;
-wire [QSFP_CNT-1:0]                   qsfp_drp_rst;
-wire [QSFP_CNT*24-1:0]                qsfp_drp_addr;
-wire [QSFP_CNT*16-1:0]                qsfp_drp_di;
-wire [QSFP_CNT-1:0]                   qsfp_drp_en;
-wire [QSFP_CNT-1:0]                   qsfp_drp_we;
-wire [QSFP_CNT*16-1:0]                qsfp_drp_do;
-wire [QSFP_CNT-1:0]                   qsfp_drp_rdy;
+wire [0:0]                   qsfp_drp_clk;
+wire [0:0]                   qsfp_drp_rst;
+wire [23:0]                qsfp_drp_addr;
+wire [15:0]                qsfp_drp_di;
+wire [0:0]                   qsfp_drp_en;
+wire [0:0]                   qsfp_drp_we;
+wire [15:0]                qsfp_drp_do;
+wire [0:0]                   qsfp_drp_rdy;
 
-assign qsfp_drp_clk[0 +: 1] = clk_125mhz_int;
-assign qsfp_drp_rst[0 +: 1] = rst_125mhz_int;
+assign qsfp_drp_clk[0] = clk_125mhz_int;
+assign qsfp_drp_rst[0] = rst_125mhz_int;
 
 wire qsfp_gtpowergood;
 
@@ -1009,20 +1009,91 @@ qsfp_sync_reset_inst (
     .out(qsfp_rst)
 );
 
-eth_xcvr_phy_10g_gty_quad_wrapper #(
-    .PRBS31_ENABLE(1),
-    .TX_SERDES_PIPELINE(1),
-    .RX_SERDES_PIPELINE(1),
-    .COUNT_125US(125000/2.56)
+    // PLL parameters
+    localparam QPLL0_PD = 1'b0;
+    localparam QPLL1_PD = 1'b1;
+    localparam QPLL0_EXT_CTRL = 0;
+    localparam QPLL1_EXT_CTRL = 0;
+
+    // GT parameters
+    localparam GT_1_TX_PD = 1'b0;
+    localparam GT_1_TX_QPLL_SEL = 1'b0;
+    localparam GT_1_TX_POLARITY = 1'b0;
+    localparam GT_1_TX_ELECIDLE = 1'b0;
+    localparam GT_1_TX_INHIBIT = 1'b0;
+    localparam GT_1_TX_DIFFCTRL = 5'd16;
+    localparam GT_1_TX_MAINCURSOR = 7'd64;
+    localparam GT_1_TX_POSTCURSOR = 5'd0;
+    localparam GT_1_TX_PRECURSOR = 5'd0;
+    localparam GT_1_RX_PD = 1'b0;
+    localparam GT_1_RX_QPLL_SEL = 1'b0;
+    localparam GT_1_RX_LPM_EN = 1'b0;
+    localparam GT_1_RX_POLARITY = 1'b0;
+
+    // PHY parameters
+    localparam DATA_WIDTH = 64;
+    localparam CTRL_WIDTH = (DATA_WIDTH/8);
+    localparam HDR_WIDTH = 2;
+    localparam PRBS31_ENABLE = 0;
+    localparam TX_SERDES_PIPELINE = 0;
+    localparam RX_SERDES_PIPELINE = 0;
+    localparam BITSLIP_HIGH_CYCLES = 1;
+    localparam BITSLIP_LOW_CYCLES = 8;
+    localparam COUNT_125US = 125000/6.4;
+
+
+eth_xcvr_phy_10g_gty_wrapper #(
+    .HAS_COMMON(1),
+    .GT_GTH(0),
+    .GT_USP(1),
+    // PLL
+    .QPLL0_PD(QPLL0_PD),
+    .QPLL1_PD(QPLL1_PD),
+    .QPLL0_EXT_CTRL(QPLL0_EXT_CTRL),
+    .QPLL1_EXT_CTRL(QPLL1_EXT_CTRL),
+    // GT
+    .GT_TX_PD(GT_1_TX_PD),
+    .GT_TX_QPLL_SEL(GT_1_TX_QPLL_SEL),
+    .GT_TX_POLARITY(GT_1_TX_POLARITY),
+    .GT_TX_ELECIDLE(GT_1_TX_ELECIDLE),
+    .GT_TX_INHIBIT(GT_1_TX_INHIBIT),
+    .GT_TX_DIFFCTRL(GT_1_TX_DIFFCTRL),
+    .GT_TX_MAINCURSOR(GT_1_TX_MAINCURSOR),
+    .GT_TX_POSTCURSOR(GT_1_TX_POSTCURSOR),
+    .GT_TX_PRECURSOR(GT_1_TX_PRECURSOR),
+    .GT_RX_PD(GT_1_RX_PD),
+    .GT_RX_QPLL_SEL(GT_1_RX_QPLL_SEL),
+    .GT_RX_LPM_EN(GT_1_RX_LPM_EN),
+    .GT_RX_POLARITY(GT_1_RX_POLARITY),
+    // PHY
+    .DATA_WIDTH(DATA_WIDTH),
+    .CTRL_WIDTH(CTRL_WIDTH),
+    .HDR_WIDTH(HDR_WIDTH),
+    .PRBS31_ENABLE(PRBS31_ENABLE),
+    .TX_SERDES_PIPELINE(TX_SERDES_PIPELINE),
+    .RX_SERDES_PIPELINE(RX_SERDES_PIPELINE),
+    .BITSLIP_HIGH_CYCLES(BITSLIP_HIGH_CYCLES),
+    .BITSLIP_LOW_CYCLES(BITSLIP_LOW_CYCLES),
+    .COUNT_125US(COUNT_125US)
 )
-qsfp_phy_quad_inst (
+eth_xcvr_phy_1 (
     .xcvr_ctrl_clk(clk_125mhz_int),
     .xcvr_ctrl_rst(qsfp_rst),
 
-    /*
-     * Common
-     */
+    // Common
     .xcvr_gtpowergood_out(qsfp_gtpowergood),
+
+    // DRP
+    .drp_clk(qsfp_drp_clk),
+    .drp_rst(qsfp_drp_rst),
+    .drp_addr(qsfp_drp_addr),
+    .drp_di(qsfp_drp_di),
+    .drp_en(qsfp_drp_en),
+    .drp_we(qsfp_drp_we),
+    .drp_do(qsfp_drp_do),
+    .drp_rdy(qsfp_drp_rdy),
+
+    // PLL out
     .xcvr_gtrefclk00_in(qsfp_mgt_refclk_0),
     .xcvr_qpll0pd_in(1'b0),
     .xcvr_qpll0reset_in(1'b0),
@@ -1038,101 +1109,166 @@ qsfp_phy_quad_inst (
     .xcvr_qpll1clk_out(),
     .xcvr_qpll1refclk_out(),
 
-    /*
-     * DRP
-     */
-    .drp_clk(qsfp_drp_clk[0 +: 1]),
-    .drp_rst(qsfp_drp_rst[0 +: 1]),
-    .drp_addr(qsfp_drp_addr[0*24 +: 24]),
-    .drp_di(qsfp_drp_di[0*16 +: 16]),
-    .drp_en(qsfp_drp_en[0 +: 1]),
-    .drp_we(qsfp_drp_we[0 +: 1]),
-    .drp_do(qsfp_drp_do[0*16 +: 16]),
-    .drp_rdy(qsfp_drp_rdy[0 +: 1]),
+    // PLL in
+    .xcvr_qpll0lock_in(1'b0),
+    .xcvr_qpll0clk_in(1'b0),
+    .xcvr_qpll0refclk_in(1'b0),
+    .xcvr_qpll1lock_in(1'b0),
+    .xcvr_qpll1clk_in(1'b0),
+    .xcvr_qpll1refclk_in(1'b0),
 
-    /*
-     * Serial data
-     */
-    .xcvr_txp(qsfp1_tx_p),
-    .xcvr_txn(qsfp1_tx_n),
-    .xcvr_rxp(qsfp1_rx_p),
-    .xcvr_rxn(qsfp1_rx_n),
+    // Serial data
+    .xcvr_txp(qsfp1_tx_p[0]),
+    .xcvr_txn(qsfp1_tx_n[0]),
+    .xcvr_rxp(qsfp1_rx_p[0]),
+    .xcvr_rxn(qsfp1_rx_n[0]),
 
-    /*
-     * PHY connections
-     */
-    .phy_1_tx_clk(qsfp_tx_clk[0*4+0 +: 1]),
-    .phy_1_tx_rst(qsfp_tx_rst[0*4+0 +: 1]),
-    .phy_1_xgmii_txd(qsfp_txd[(0*4+0)*XGMII_DATA_WIDTH +: XGMII_DATA_WIDTH]),
-    .phy_1_xgmii_txc(qsfp_txc[(0*4+0)*XGMII_CTRL_WIDTH +: XGMII_CTRL_WIDTH]),
-    .phy_1_rx_clk(qsfp_rx_clk[0*4+0 +: 1]),
-    .phy_1_rx_rst(qsfp_rx_rst[0*4+0 +: 1]),
-    .phy_1_xgmii_rxd(qsfp_rxd[(0*4+0)*XGMII_DATA_WIDTH +: XGMII_DATA_WIDTH]),
-    .phy_1_xgmii_rxc(qsfp_rxc[(0*4+0)*XGMII_CTRL_WIDTH +: XGMII_CTRL_WIDTH]),
-    .phy_1_tx_bad_block(),
-    .phy_1_rx_error_count(qsfp_rx_error_count[(0*4+0)*7 +: 7]),
-    .phy_1_rx_bad_block(),
-    .phy_1_rx_sequence_error(),
-    .phy_1_rx_block_lock(),
-    .phy_1_rx_high_ber(),
-    .phy_1_rx_status(qsfp_rx_status[0*4+0 +: 1]),
-    .phy_1_cfg_tx_prbs31_enable(qsfp_cfg_tx_prbs31_enable[0*4+0 +: 1]),
-    .phy_1_cfg_rx_prbs31_enable(qsfp_cfg_rx_prbs31_enable[0*4+0 +: 1]),
-
-    .phy_2_tx_clk(qsfp_tx_clk[0*4+1 +: 1]),
-    .phy_2_tx_rst(qsfp_tx_rst[0*4+1 +: 1]),
-    .phy_2_xgmii_txd(qsfp_txd[(0*4+1)*XGMII_DATA_WIDTH +: XGMII_DATA_WIDTH]),
-    .phy_2_xgmii_txc(qsfp_txc[(0*4+1)*XGMII_CTRL_WIDTH +: XGMII_CTRL_WIDTH]),
-    .phy_2_rx_clk(qsfp_rx_clk[0*4+1 +: 1]),
-    .phy_2_rx_rst(qsfp_rx_rst[0*4+1 +: 1]),
-    .phy_2_xgmii_rxd(qsfp_rxd[(0*4+1)*XGMII_DATA_WIDTH +: XGMII_DATA_WIDTH]),
-    .phy_2_xgmii_rxc(qsfp_rxc[(0*4+1)*XGMII_CTRL_WIDTH +: XGMII_CTRL_WIDTH]),
-    .phy_2_tx_bad_block(),
-    .phy_2_rx_error_count(qsfp_rx_error_count[(0*4+1)*7 +: 7]),
-    .phy_2_rx_bad_block(),
-    .phy_2_rx_sequence_error(),
-    .phy_2_rx_block_lock(),
-    .phy_2_rx_high_ber(),
-    .phy_2_rx_status(qsfp_rx_status[0*4+1 +: 1]),
-    .phy_2_cfg_tx_prbs31_enable(qsfp_cfg_tx_prbs31_enable[0*4+1 +: 1]),
-    .phy_2_cfg_rx_prbs31_enable(qsfp_cfg_rx_prbs31_enable[0*4+1 +: 1]),
-
-    .phy_3_tx_clk(qsfp_tx_clk[0*4+2 +: 1]),
-    .phy_3_tx_rst(qsfp_tx_rst[0*4+2 +: 1]),
-    .phy_3_xgmii_txd(qsfp_txd[(0*4+2)*XGMII_DATA_WIDTH +: XGMII_DATA_WIDTH]),
-    .phy_3_xgmii_txc(qsfp_txc[(0*4+2)*XGMII_CTRL_WIDTH +: XGMII_CTRL_WIDTH]),
-    .phy_3_rx_clk(qsfp_rx_clk[0*4+2 +: 1]),
-    .phy_3_rx_rst(qsfp_rx_rst[0*4+2 +: 1]),
-    .phy_3_xgmii_rxd(qsfp_rxd[(0*4+2)*XGMII_DATA_WIDTH +: XGMII_DATA_WIDTH]),
-    .phy_3_xgmii_rxc(qsfp_rxc[(0*4+2)*XGMII_CTRL_WIDTH +: XGMII_CTRL_WIDTH]),
-    .phy_3_tx_bad_block(),
-    .phy_3_rx_error_count(qsfp_rx_error_count[(0*4+2)*7 +: 7]),
-    .phy_3_rx_bad_block(),
-    .phy_3_rx_sequence_error(),
-    .phy_3_rx_block_lock(),
-    .phy_3_rx_high_ber(),
-    .phy_3_rx_status(qsfp_rx_status[0*4+2 +: 1]),
-    .phy_3_cfg_tx_prbs31_enable(qsfp_cfg_tx_prbs31_enable[0*4+2 +: 1]),
-    .phy_3_cfg_rx_prbs31_enable(qsfp_cfg_rx_prbs31_enable[0*4+2 +: 1]),
-
-    .phy_4_tx_clk(qsfp_tx_clk[0*4+3 +: 1]),
-    .phy_4_tx_rst(qsfp_tx_rst[0*4+3 +: 1]),
-    .phy_4_xgmii_txd(qsfp_txd[(0*4+3)*XGMII_DATA_WIDTH +: XGMII_DATA_WIDTH]),
-    .phy_4_xgmii_txc(qsfp_txc[(0*4+3)*XGMII_CTRL_WIDTH +: XGMII_CTRL_WIDTH]),
-    .phy_4_rx_clk(qsfp_rx_clk[0*4+3 +: 1]),
-    .phy_4_rx_rst(qsfp_rx_rst[0*4+3 +: 1]),
-    .phy_4_xgmii_rxd(qsfp_rxd[(0*4+3)*XGMII_DATA_WIDTH +: XGMII_DATA_WIDTH]),
-    .phy_4_xgmii_rxc(qsfp_rxc[(0*4+3)*XGMII_CTRL_WIDTH +: XGMII_CTRL_WIDTH]),
-    .phy_4_tx_bad_block(),
-    .phy_4_rx_error_count(qsfp_rx_error_count[(0*4+3)*7 +: 7]),
-    .phy_4_rx_bad_block(),
-    .phy_4_rx_sequence_error(),
-    .phy_4_rx_block_lock(),
-    .phy_4_rx_high_ber(),
-    .phy_4_rx_status(qsfp_rx_status[0*4+3 +: 1]),
-    .phy_4_cfg_tx_prbs31_enable(qsfp_cfg_tx_prbs31_enable[0*4+3 +: 1]),
-    .phy_4_cfg_rx_prbs31_enable(qsfp_cfg_rx_prbs31_enable[0*4+3 +: 1])
+    // PHY connections
+    .phy_tx_clk(qsfp_tx_clk),
+    .phy_tx_rst(qsfp_tx_rst),
+    .phy_xgmii_txd(qsfp_txd),
+    .phy_xgmii_txc(qsfp_txc),
+    .phy_rx_clk(qsfp_rx_clk),
+    .phy_rx_rst(qsfp_rx_rst),
+    .phy_xgmii_rxd(qsfp_rxd),
+    .phy_xgmii_rxc(qsfp_rxc),
+    .phy_tx_bad_block(),
+    .phy_rx_error_count(qsfp_rx_error_count),
+    .phy_rx_bad_block(),
+    .phy_rx_sequence_error(),
+    .phy_rx_block_lock(),
+    .phy_rx_high_ber(),
+    .phy_rx_status(qsfp_rx_status),
+    .phy_cfg_tx_prbs31_enable(qsfp_cfg_tx_prbs31_enable),
+    .phy_cfg_rx_prbs31_enable(qsfp_cfg_rx_prbs31_enable)
 );
+
+
+//eth_xcvr_phy_10g_gty_quad_wrapper #(
+//    .PRBS31_ENABLE(1),
+//    .TX_SERDES_PIPELINE(1),
+//    .RX_SERDES_PIPELINE(1),
+//    .COUNT_125US(125000/2.56)
+//)
+//qsfp_phy_quad_inst (
+//    .xcvr_ctrl_clk(clk_125mhz_int),
+//    .xcvr_ctrl_rst(qsfp_rst),
+//
+//    /*
+//     * Common
+//     */
+//    .xcvr_gtpowergood_out(qsfp_gtpowergood),
+//    .xcvr_gtrefclk00_in(qsfp_mgt_refclk_0),
+//    .xcvr_qpll0pd_in(1'b0),
+//    .xcvr_qpll0reset_in(1'b0),
+//    .xcvr_qpll0pcierate_in(3'd0),
+//    .xcvr_qpll0lock_out(),
+//    .xcvr_qpll0clk_out(),
+//    .xcvr_qpll0refclk_out(),
+//    .xcvr_gtrefclk01_in(qsfp_mgt_refclk_0),
+//    .xcvr_qpll1pd_in(1'b0),
+//    .xcvr_qpll1reset_in(1'b0),
+//    .xcvr_qpll1pcierate_in(3'd0),
+//    .xcvr_qpll1lock_out(),
+//    .xcvr_qpll1clk_out(),
+//    .xcvr_qpll1refclk_out(),
+//
+//    /*
+//     * DRP
+//     */
+//    .drp_clk(qsfp_drp_clk[0 +: 1]),
+//    .drp_rst(qsfp_drp_rst[0 +: 1]),
+//    .drp_addr(qsfp_drp_addr[0*24 +: 24]),
+//    .drp_di(qsfp_drp_di[0*16 +: 16]),
+//    .drp_en(qsfp_drp_en[0 +: 1]),
+//    .drp_we(qsfp_drp_we[0 +: 1]),
+//    .drp_do(qsfp_drp_do[0*16 +: 16]),
+//    .drp_rdy(qsfp_drp_rdy[0 +: 1]),
+//
+//    /*
+//     * Serial data
+//     */
+//    .xcvr_txp(qsfp1_tx_p),
+//    .xcvr_txn(qsfp1_tx_n),
+//    .xcvr_rxp(qsfp1_rx_p),
+//    .xcvr_rxn(qsfp1_rx_n),
+//
+//    /*
+//     * PHY connections
+//     */
+//    .phy_1_tx_clk(qsfp_tx_clk[0*4+0 +: 1]),
+//    .phy_1_tx_rst(qsfp_tx_rst[0*4+0 +: 1]),
+//    .phy_1_xgmii_txd(qsfp_txd[(0*4+0)*XGMII_DATA_WIDTH +: XGMII_DATA_WIDTH]),
+//    .phy_1_xgmii_txc(qsfp_txc[(0*4+0)*XGMII_CTRL_WIDTH +: XGMII_CTRL_WIDTH]),
+//    .phy_1_rx_clk(qsfp_rx_clk[0*4+0 +: 1]),
+//    .phy_1_rx_rst(qsfp_rx_rst[0*4+0 +: 1]),
+//    .phy_1_xgmii_rxd(qsfp_rxd[(0*4+0)*XGMII_DATA_WIDTH +: XGMII_DATA_WIDTH]),
+//    .phy_1_xgmii_rxc(qsfp_rxc[(0*4+0)*XGMII_CTRL_WIDTH +: XGMII_CTRL_WIDTH]),
+//    .phy_1_tx_bad_block(),
+//    .phy_1_rx_error_count(qsfp_rx_error_count[(0*4+0)*7 +: 7]),
+//    .phy_1_rx_bad_block(),
+//    .phy_1_rx_sequence_error(),
+//    .phy_1_rx_block_lock(),
+//    .phy_1_rx_high_ber(),
+//    .phy_1_rx_status(qsfp_rx_status[0*4+0 +: 1]),
+//    .phy_1_cfg_tx_prbs31_enable(qsfp_cfg_tx_prbs31_enable[0*4+0 +: 1]),
+//    .phy_1_cfg_rx_prbs31_enable(qsfp_cfg_rx_prbs31_enable[0*4+0 +: 1]),
+//
+//    .phy_2_tx_clk(qsfp_tx_clk[0*4+1 +: 1]),
+//    .phy_2_tx_rst(qsfp_tx_rst[0*4+1 +: 1]),
+//    .phy_2_xgmii_txd(qsfp_txd[(0*4+1)*XGMII_DATA_WIDTH +: XGMII_DATA_WIDTH]),
+//    .phy_2_xgmii_txc(qsfp_txc[(0*4+1)*XGMII_CTRL_WIDTH +: XGMII_CTRL_WIDTH]),
+//    .phy_2_rx_clk(qsfp_rx_clk[0*4+1 +: 1]),
+//    .phy_2_rx_rst(qsfp_rx_rst[0*4+1 +: 1]),
+//    .phy_2_xgmii_rxd(qsfp_rxd[(0*4+1)*XGMII_DATA_WIDTH +: XGMII_DATA_WIDTH]),
+//    .phy_2_xgmii_rxc(qsfp_rxc[(0*4+1)*XGMII_CTRL_WIDTH +: XGMII_CTRL_WIDTH]),
+//    .phy_2_tx_bad_block(),
+//    .phy_2_rx_error_count(qsfp_rx_error_count[(0*4+1)*7 +: 7]),
+//    .phy_2_rx_bad_block(),
+//    .phy_2_rx_sequence_error(),
+//    .phy_2_rx_block_lock(),
+//    .phy_2_rx_high_ber(),
+//    .phy_2_rx_status(qsfp_rx_status[0*4+1 +: 1]),
+//    .phy_2_cfg_tx_prbs31_enable(qsfp_cfg_tx_prbs31_enable[0*4+1 +: 1]),
+//    .phy_2_cfg_rx_prbs31_enable(qsfp_cfg_rx_prbs31_enable[0*4+1 +: 1]),
+//
+//    .phy_3_tx_clk(qsfp_tx_clk[0*4+2 +: 1]),
+//    .phy_3_tx_rst(qsfp_tx_rst[0*4+2 +: 1]),
+//    .phy_3_xgmii_txd(qsfp_txd[(0*4+2)*XGMII_DATA_WIDTH +: XGMII_DATA_WIDTH]),
+//    .phy_3_xgmii_txc(qsfp_txc[(0*4+2)*XGMII_CTRL_WIDTH +: XGMII_CTRL_WIDTH]),
+//    .phy_3_rx_clk(qsfp_rx_clk[0*4+2 +: 1]),
+//    .phy_3_rx_rst(qsfp_rx_rst[0*4+2 +: 1]),
+//    .phy_3_xgmii_rxd(qsfp_rxd[(0*4+2)*XGMII_DATA_WIDTH +: XGMII_DATA_WIDTH]),
+//    .phy_3_xgmii_rxc(qsfp_rxc[(0*4+2)*XGMII_CTRL_WIDTH +: XGMII_CTRL_WIDTH]),
+//    .phy_3_tx_bad_block(),
+//    .phy_3_rx_error_count(qsfp_rx_error_count[(0*4+2)*7 +: 7]),
+//    .phy_3_rx_bad_block(),
+//    .phy_3_rx_sequence_error(),
+//    .phy_3_rx_block_lock(),
+//    .phy_3_rx_high_ber(),
+//    .phy_3_rx_status(qsfp_rx_status[0*4+2 +: 1]),
+//    .phy_3_cfg_tx_prbs31_enable(qsfp_cfg_tx_prbs31_enable[0*4+2 +: 1]),
+//    .phy_3_cfg_rx_prbs31_enable(qsfp_cfg_rx_prbs31_enable[0*4+2 +: 1]),
+//
+//    .phy_4_tx_clk(qsfp_tx_clk[0*4+3 +: 1]),
+//    .phy_4_tx_rst(qsfp_tx_rst[0*4+3 +: 1]),
+//    .phy_4_xgmii_txd(qsfp_txd[(0*4+3)*XGMII_DATA_WIDTH +: XGMII_DATA_WIDTH]),
+//    .phy_4_xgmii_txc(qsfp_txc[(0*4+3)*XGMII_CTRL_WIDTH +: XGMII_CTRL_WIDTH]),
+//    .phy_4_rx_clk(qsfp_rx_clk[0*4+3 +: 1]),
+//    .phy_4_rx_rst(qsfp_rx_rst[0*4+3 +: 1]),
+//    .phy_4_xgmii_rxd(qsfp_rxd[(0*4+3)*XGMII_DATA_WIDTH +: XGMII_DATA_WIDTH]),
+//    .phy_4_xgmii_rxc(qsfp_rxc[(0*4+3)*XGMII_CTRL_WIDTH +: XGMII_CTRL_WIDTH]),
+//    .phy_4_tx_bad_block(),
+//    .phy_4_rx_error_count(qsfp_rx_error_count[(0*4+3)*7 +: 7]),
+//    .phy_4_rx_bad_block(),
+//    .phy_4_rx_sequence_error(),
+//    .phy_4_rx_block_lock(),
+//    .phy_4_rx_high_ber(),
+//    .phy_4_rx_status(qsfp_rx_status[0*4+3 +: 1]),
+//    .phy_4_cfg_tx_prbs31_enable(qsfp_cfg_tx_prbs31_enable[0*4+3 +: 1]),
+//    .phy_4_cfg_rx_prbs31_enable(qsfp_cfg_rx_prbs31_enable[0*4+3 +: 1])
+//);
+
 
 wire ptp_clk;
 wire ptp_rst;
