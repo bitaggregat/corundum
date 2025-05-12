@@ -1,5 +1,6 @@
 mqnic-config
 mqnic-bmc
+mqnic-bert
 mqnic-dump
 mqnic-fw
 mqnic-xcvr
