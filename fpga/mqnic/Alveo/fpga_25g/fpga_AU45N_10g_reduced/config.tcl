@@ -62,11 +62,15 @@ dict set params TDMA_BER_ENABLE "0"
 set eth_xcvr_freerun_freq {125}
 set eth_xcvr_line_rate {10.3125}
 set eth_xcvr_refclk_freq {161.1328125}
-set eth_xcvr_sec_line_rate {0}
+#set eth_xcvr_sec_line_rate {0}
+set eth_xcvr_sec_line_rate {1.25}
 set eth_xcvr_sec_refclk_freq $eth_xcvr_refclk_freq
 set eth_xcvr_qpll_fracn [expr {int(fmod($eth_xcvr_line_rate*1000/2 / $eth_xcvr_refclk_freq, 1)*pow(2, 24))}]
-set eth_xcvr_sec_qpll_fracn [expr {int(fmod($eth_xcvr_sec_line_rate*1000/2 / $eth_xcvr_sec_refclk_freq, 1)*pow(2, 24))}]
+#set eth_xcvr_sec_qpll_fracn [expr {int(fmod($eth_xcvr_sec_line_rate*1000/2 / $eth_xcvr_sec_refclk_freq, 1)*pow(2, 24))}]
+set eth_xcvr_sec_qpll_fracn {2033602}
 set eth_xcvr_rx_eq_mode {DFE}
+puts "QPLL0 fracn: ${eth_xcvr_qpll_fracn}"
+puts "QPLL1 fracn: ${eth_xcvr_sec_qpll_fracn}"
 
 # Structural configuration
 dict set params IF_COUNT "1"
@@ -281,7 +285,53 @@ if {$eth_xcvr_sec_line_rate != 0} {
 }
 dict set xcvr_config CONFIG.FREERUN_FREQUENCY $eth_xcvr_freerun_freq
 
+set extra_ports [list]
+foreach exp [get_property CONFIG.ENABLE_OPTIONAL_PORTS [get_ips eth_xcvr_gty_channel]] {
+    lappend extra_ports $exp
+};
+
+proc lappend_if_missing { input_list itemname } {
+    upvar $input_list local_input_list
+    if { [lsearch $input_list $itemname] == -1 } {
+        lappend local_input_list $itemname
+    }
+}
+
+# channel 8b/10b en/decoder
+lappend_if_missing extra_ports rx8b10ben_in
+lappend_if_missing extra_ports rxctrl0_out
+lappend_if_missing extra_ports rxctrl1_out
+lappend_if_missing extra_ports rxctrl2_out
+lappend_if_missing extra_ports rxctrl3_out
+lappend_if_missing extra_ports tx8b10ben_in
+lappend_if_missing extra_ports tx8b10bbypass_in
+lappend_if_missing extra_ports txctrl0_in
+lappend_if_missing extra_ports txctrl1_in
+lappend_if_missing extra_ports txctrl2_in
+
+# channel RX word alignment
+lappend_if_missing extra_ports rxcommadeten_in
+lappend_if_missing extra_ports rxmcommaalignen_in
+lappend_if_missing extra_ports rxpcommaalignen_in
+lappend_if_missing extra_ports rxbyteisaligned_out
+
+# channel rate change
+lappend_if_missing extra_ports rxrate_in
+lappend_if_missing extra_ports rxratedone_out
+lappend_if_missing extra_ports txrate_in
+lappend_if_missing extra_ports txratedone_out
+
+###
+# probably not necessary
+###
+# channel extra data signals
+#lappend_if_missing extra_ports txdataextendrsvd_in
+
+
+dict set xcvr_config CONFIG.ENABLE_OPTIONAL_PORTS [concat $extra_pll_ports $extra_ports]
 set_property -dict $xcvr_config [get_ips eth_xcvr_gty_full]
+
+dict set xcvr_config CONFIG.ENABLE_OPTIONAL_PORTS $extra_ports
 set_property -dict $xcvr_config [get_ips eth_xcvr_gty_channel]
 
 # apply parameters to top-level
