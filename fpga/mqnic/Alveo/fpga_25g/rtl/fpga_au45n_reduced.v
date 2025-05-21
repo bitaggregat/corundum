@@ -539,9 +539,6 @@ wire [1:0]  axil_cms_rresp;
 wire        axil_cms_rvalid;
 wire        axil_cms_rready;
 
-wire [6:0] hbm_temp_1;
-wire [6:0] hbm_temp_2;
-
 generate
 
 if (CMS_ENABLE) begin : cms
@@ -1114,147 +1111,6 @@ assign ptp_sample_clk = clk_125mhz_int;
 
 assign qsfp_led_stat_g[1] = qsfp_rx_status;
 
-// HBM
-wire [HBM_CH-1:0]                     hbm_clk;
-wire [HBM_CH-1:0]                     hbm_rst;
-
-wire [HBM_CH*AXI_HBM_ID_WIDTH-1:0]    m_axi_hbm_awid;
-wire [HBM_CH*AXI_HBM_ADDR_WIDTH-1:0]  m_axi_hbm_awaddr;
-wire [HBM_CH*8-1:0]                   m_axi_hbm_awlen;
-wire [HBM_CH*3-1:0]                   m_axi_hbm_awsize;
-wire [HBM_CH*2-1:0]                   m_axi_hbm_awburst;
-wire [HBM_CH-1:0]                     m_axi_hbm_awlock;
-wire [HBM_CH*4-1:0]                   m_axi_hbm_awcache;
-wire [HBM_CH*3-1:0]                   m_axi_hbm_awprot;
-wire [HBM_CH*4-1:0]                   m_axi_hbm_awqos;
-wire [HBM_CH-1:0]                     m_axi_hbm_awvalid;
-wire [HBM_CH-1:0]                     m_axi_hbm_awready;
-wire [HBM_CH*AXI_HBM_DATA_WIDTH-1:0]  m_axi_hbm_wdata;
-wire [HBM_CH*AXI_HBM_STRB_WIDTH-1:0]  m_axi_hbm_wstrb;
-wire [HBM_CH-1:0]                     m_axi_hbm_wlast;
-wire [HBM_CH-1:0]                     m_axi_hbm_wvalid;
-wire [HBM_CH-1:0]                     m_axi_hbm_wready;
-wire [HBM_CH*AXI_HBM_ID_WIDTH-1:0]    m_axi_hbm_bid;
-wire [HBM_CH*2-1:0]                   m_axi_hbm_bresp;
-wire [HBM_CH-1:0]                     m_axi_hbm_bvalid;
-wire [HBM_CH-1:0]                     m_axi_hbm_bready;
-wire [HBM_CH*AXI_HBM_ID_WIDTH-1:0]    m_axi_hbm_arid;
-wire [HBM_CH*AXI_HBM_ADDR_WIDTH-1:0]  m_axi_hbm_araddr;
-wire [HBM_CH*8-1:0]                   m_axi_hbm_arlen;
-wire [HBM_CH*3-1:0]                   m_axi_hbm_arsize;
-wire [HBM_CH*2-1:0]                   m_axi_hbm_arburst;
-wire [HBM_CH-1:0]                     m_axi_hbm_arlock;
-wire [HBM_CH*4-1:0]                   m_axi_hbm_arcache;
-wire [HBM_CH*3-1:0]                   m_axi_hbm_arprot;
-wire [HBM_CH*4-1:0]                   m_axi_hbm_arqos;
-wire [HBM_CH-1:0]                     m_axi_hbm_arvalid;
-wire [HBM_CH-1:0]                     m_axi_hbm_arready;
-wire [HBM_CH*AXI_HBM_ID_WIDTH-1:0]    m_axi_hbm_rid;
-wire [HBM_CH*AXI_HBM_DATA_WIDTH-1:0]  m_axi_hbm_rdata;
-wire [HBM_CH*2-1:0]                   m_axi_hbm_rresp;
-wire [HBM_CH-1:0]                     m_axi_hbm_rlast;
-wire [HBM_CH-1:0]                     m_axi_hbm_rvalid;
-wire [HBM_CH-1:0]                     m_axi_hbm_rready;
-
-wire [HBM_CH-1:0]                     hbm_status;
-
-generate
-
-if (HBM_ENABLE) begin
-
-    wire hbm_ref_clk = clk_300mhz_1_int;
-
-    wire hbm_cattrip_1;
-    wire hbm_cattrip_2;
-
-    fpga_hbm #(
-        .HBM_CH(HBM_CH),
-        .HBM_GROUP_SIZE(HBM_GROUP_SIZE),
-        .AXI_HBM_DATA_WIDTH(AXI_HBM_DATA_WIDTH),
-        .AXI_HBM_ADDR_WIDTH(AXI_HBM_ADDR_WIDTH),
-        .AXI_HBM_STRB_WIDTH(AXI_HBM_STRB_WIDTH),
-        .AXI_HBM_ID_WIDTH(AXI_HBM_ID_WIDTH),
-        .AXI_HBM_MAX_BURST_LEN(AXI_HBM_MAX_BURST_LEN)
-    )
-    hbm_inst (
-        .hbm_ref_clk(hbm_ref_clk),
-        .hbm_rst_in(rst_125mhz_int),
-
-        .hbm_cattrip_1(hbm_cattrip_1),
-        .hbm_cattrip_2(hbm_cattrip_2),
-        .hbm_temp_1(hbm_temp_1),
-        .hbm_temp_2(hbm_temp_2),
-
-        .hbm_clk(hbm_clk),
-        .hbm_rst(hbm_rst),
-
-        .s_axi_hbm_awid(m_axi_hbm_awid),
-        .s_axi_hbm_awaddr(m_axi_hbm_awaddr),
-        .s_axi_hbm_awlen(m_axi_hbm_awlen),
-        .s_axi_hbm_awsize(m_axi_hbm_awsize),
-        .s_axi_hbm_awburst(m_axi_hbm_awburst),
-        .s_axi_hbm_awlock(m_axi_hbm_awlock),
-        .s_axi_hbm_awcache(m_axi_hbm_awcache),
-        .s_axi_hbm_awprot(m_axi_hbm_awprot),
-        .s_axi_hbm_awqos(m_axi_hbm_awqos),
-        .s_axi_hbm_awvalid(m_axi_hbm_awvalid),
-        .s_axi_hbm_awready(m_axi_hbm_awready),
-        .s_axi_hbm_wdata(m_axi_hbm_wdata),
-        .s_axi_hbm_wstrb(m_axi_hbm_wstrb),
-        .s_axi_hbm_wlast(m_axi_hbm_wlast),
-        .s_axi_hbm_wvalid(m_axi_hbm_wvalid),
-        .s_axi_hbm_wready(m_axi_hbm_wready),
-        .s_axi_hbm_bid(m_axi_hbm_bid),
-        .s_axi_hbm_bresp(m_axi_hbm_bresp),
-        .s_axi_hbm_bvalid(m_axi_hbm_bvalid),
-        .s_axi_hbm_bready(m_axi_hbm_bready),
-        .s_axi_hbm_arid(m_axi_hbm_arid),
-        .s_axi_hbm_araddr(m_axi_hbm_araddr),
-        .s_axi_hbm_arlen(m_axi_hbm_arlen),
-        .s_axi_hbm_arsize(m_axi_hbm_arsize),
-        .s_axi_hbm_arburst(m_axi_hbm_arburst),
-        .s_axi_hbm_arlock(m_axi_hbm_arlock),
-        .s_axi_hbm_arcache(m_axi_hbm_arcache),
-        .s_axi_hbm_arprot(m_axi_hbm_arprot),
-        .s_axi_hbm_arqos(m_axi_hbm_arqos),
-        .s_axi_hbm_arvalid(m_axi_hbm_arvalid),
-        .s_axi_hbm_arready(m_axi_hbm_arready),
-        .s_axi_hbm_rid(m_axi_hbm_rid),
-        .s_axi_hbm_rdata(m_axi_hbm_rdata),
-        .s_axi_hbm_rresp(m_axi_hbm_rresp),
-        .s_axi_hbm_rlast(m_axi_hbm_rlast),
-        .s_axi_hbm_rvalid(m_axi_hbm_rvalid),
-        .s_axi_hbm_rready(m_axi_hbm_rready),
-
-        .hbm_status(hbm_status)
-    );
-
-end else begin
-
-    assign hbm_clk = 0;
-    assign hbm_rst = 0;
-
-    assign m_axi_hbm_awready = 0;
-    assign m_axi_hbm_wready = 0;
-    assign m_axi_hbm_bid = 0;
-    assign m_axi_hbm_bresp = 0;
-    assign m_axi_hbm_bvalid = 0;
-    assign m_axi_hbm_arready = 0;
-    assign m_axi_hbm_rid = 0;
-    assign m_axi_hbm_rdata = 0;
-    assign m_axi_hbm_rresp = 0;
-    assign m_axi_hbm_rlast = 0;
-    assign m_axi_hbm_rvalid = 0;
-
-    assign hbm_status = 0;
-
-    assign hbm_temp_1 = 7'd0;
-    assign hbm_temp_2 = 7'd0;
-
-end
-
-endgenerate
-
 fpga_core #(
     // FW and board IDs
     .FPGA_ID(FPGA_ID),
@@ -1341,14 +1197,7 @@ fpga_core #(
 
     // RAM configuration
     .DDR_ENABLE(0),
-    .HBM_CH(HBM_CH),
-    .HBM_ENABLE(HBM_ENABLE),
-    .HBM_GROUP_SIZE(HBM_GROUP_SIZE),
-    .AXI_HBM_DATA_WIDTH(AXI_HBM_DATA_WIDTH),
-    .AXI_HBM_ADDR_WIDTH(AXI_HBM_ADDR_WIDTH),
-    .AXI_HBM_STRB_WIDTH(AXI_HBM_STRB_WIDTH),
-    .AXI_HBM_ID_WIDTH(AXI_HBM_ID_WIDTH),
-    .AXI_HBM_MAX_BURST_LEN(AXI_HBM_MAX_BURST_LEN),
+    .HBM_ENABLE(0),
 
     // Application block configuration
     .APP_ID(APP_ID),
@@ -1608,48 +1457,48 @@ core_inst (
     /*
      * HBM
      */
-    .hbm_clk(hbm_clk),
-    .hbm_rst(hbm_rst),
+    .hbm_clk(0),
+    .hbm_rst(0),
 
-    .m_axi_hbm_awid(m_axi_hbm_awid),
-    .m_axi_hbm_awaddr(m_axi_hbm_awaddr),
-    .m_axi_hbm_awlen(m_axi_hbm_awlen),
-    .m_axi_hbm_awsize(m_axi_hbm_awsize),
-    .m_axi_hbm_awburst(m_axi_hbm_awburst),
-    .m_axi_hbm_awlock(m_axi_hbm_awlock),
-    .m_axi_hbm_awcache(m_axi_hbm_awcache),
-    .m_axi_hbm_awprot(m_axi_hbm_awprot),
-    .m_axi_hbm_awqos(m_axi_hbm_awqos),
-    .m_axi_hbm_awvalid(m_axi_hbm_awvalid),
-    .m_axi_hbm_awready(m_axi_hbm_awready),
-    .m_axi_hbm_wdata(m_axi_hbm_wdata),
-    .m_axi_hbm_wstrb(m_axi_hbm_wstrb),
-    .m_axi_hbm_wlast(m_axi_hbm_wlast),
-    .m_axi_hbm_wvalid(m_axi_hbm_wvalid),
-    .m_axi_hbm_wready(m_axi_hbm_wready),
-    .m_axi_hbm_bid(m_axi_hbm_bid),
-    .m_axi_hbm_bresp(m_axi_hbm_bresp),
-    .m_axi_hbm_bvalid(m_axi_hbm_bvalid),
-    .m_axi_hbm_bready(m_axi_hbm_bready),
-    .m_axi_hbm_arid(m_axi_hbm_arid),
-    .m_axi_hbm_araddr(m_axi_hbm_araddr),
-    .m_axi_hbm_arlen(m_axi_hbm_arlen),
-    .m_axi_hbm_arsize(m_axi_hbm_arsize),
-    .m_axi_hbm_arburst(m_axi_hbm_arburst),
-    .m_axi_hbm_arlock(m_axi_hbm_arlock),
-    .m_axi_hbm_arcache(m_axi_hbm_arcache),
-    .m_axi_hbm_arprot(m_axi_hbm_arprot),
-    .m_axi_hbm_arqos(m_axi_hbm_arqos),
-    .m_axi_hbm_arvalid(m_axi_hbm_arvalid),
-    .m_axi_hbm_arready(m_axi_hbm_arready),
-    .m_axi_hbm_rid(m_axi_hbm_rid),
-    .m_axi_hbm_rdata(m_axi_hbm_rdata),
-    .m_axi_hbm_rresp(m_axi_hbm_rresp),
-    .m_axi_hbm_rlast(m_axi_hbm_rlast),
-    .m_axi_hbm_rvalid(m_axi_hbm_rvalid),
-    .m_axi_hbm_rready(m_axi_hbm_rready),
+    .m_axi_hbm_awid(),
+    .m_axi_hbm_awaddr(),
+    .m_axi_hbm_awlen(),
+    .m_axi_hbm_awsize(),
+    .m_axi_hbm_awburst(),
+    .m_axi_hbm_awlock(),
+    .m_axi_hbm_awcache(),
+    .m_axi_hbm_awprot(),
+    .m_axi_hbm_awqos(),
+    .m_axi_hbm_awvalid(),
+    .m_axi_hbm_awready(0),
+    .m_axi_hbm_wdata(),
+    .m_axi_hbm_wstrb(),
+    .m_axi_hbm_wlast(),
+    .m_axi_hbm_wvalid(),
+    .m_axi_hbm_wready(0),
+    .m_axi_hbm_bid(0),
+    .m_axi_hbm_bresp(0),
+    .m_axi_hbm_bvalid(0),
+    .m_axi_hbm_bready(),
+    .m_axi_hbm_arid(),
+    .m_axi_hbm_araddr(),
+    .m_axi_hbm_arlen(),
+    .m_axi_hbm_arsize(),
+    .m_axi_hbm_arburst(),
+    .m_axi_hbm_arlock(),
+    .m_axi_hbm_arcache(),
+    .m_axi_hbm_arprot(),
+    .m_axi_hbm_arqos(),
+    .m_axi_hbm_arvalid(),
+    .m_axi_hbm_arready(0),
+    .m_axi_hbm_rid(0),
+    .m_axi_hbm_rdata(0),
+    .m_axi_hbm_rresp(0),
+    .m_axi_hbm_rlast(0),
+    .m_axi_hbm_rvalid(0),
+    .m_axi_hbm_rready(),
 
-    .hbm_status(hbm_status),
+    .hbm_status(0),
 
     /*
      * QSPI flash
