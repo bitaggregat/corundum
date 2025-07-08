@@ -262,12 +262,12 @@ clk_300mhz_1_bufg_inst (
 );
 
 // MMCM instance
-// 100 MHz in, 125 MHz + 50 MHz out
+// 300 MHz in, 125 MHz + 50 MHz out
 // PFD range: 10 MHz to 500 MHz
 // VCO range: 800 MHz to 1600 MHz
-// M = 10, D = 1 sets Fvco = 1000 MHz
-// Divide by 8 to get output frequency of 125 MHz
-// Divide by 20 to get output frequency of 50 MHz
+// M = 5, D = 1 sets Fvco = 1500 MHz
+// Divide by 12 to get output frequency of 125 MHz
+// Divide by 30 to get output frequency of 50 MHz
 MMCME4_BASE #(
     .BANDWIDTH("OPTIMIZED"),
     .CLKOUT0_DIVIDE_F(12),
@@ -295,7 +295,7 @@ MMCME4_BASE #(
     .CLKFBOUT_PHASE(0),
     .DIVCLK_DIVIDE(1),
     .REF_JITTER1(0.010),
-    .CLKIN1_PERIOD(10.000),
+    .CLKIN1_PERIOD(3.333),
     .STARTUP_WAIT("FALSE"),
     .CLKOUT4_CASCADE("FALSE")
 )
