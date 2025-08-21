@@ -348,8 +348,13 @@ static int mqnic_set_channels(struct net_device *ndev,
 	return ret;
 }
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 11, 0)
+static int mqnic_get_ts_info(struct net_device *ndev,
+		struct kernel_ethtool_ts_info *info)
+#else
 static int mqnic_get_ts_info(struct net_device *ndev,
 		struct ethtool_ts_info *info)
+#endif
 {
 	struct mqnic_priv *priv = netdev_priv(ndev);
 	struct mqnic_dev *mdev = priv->mdev;
